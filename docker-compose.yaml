@@ -1,0 +1,34 @@
+services:
+  banking-app:
+    build: .
+    init: true
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - ms-net
+    depends_on:
+      - postgres
+    environment:
+      - spring.datasource.url=jdbc:postgresql://postgres:5432/postgres
+    volumes:
+      - .m2:/root/.m2
+
+  postgres:
+    container_name: banking-postgres
+    image: postgres:15.1-alpine
+    restart: always
+    volumes:
+      - bankingPg:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=p732
+    networks:
+      - ms-net
+    ports:
+      - "5432:5432"
+
+volumes:
+  bankingPg:
+networks:
+  ms-net:
+    driver: bridge
